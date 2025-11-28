@@ -36,7 +36,11 @@ export abstract class BaseController {
 					route.path
 				} to controller ${this.constructor.name}`,
 			);
-			this.router[route.method](route.path, boundRoute);
+			const middlewares = route.middlewares?.map((middleware) =>
+				middleware.execute.bind(middleware),
+			);
+			const pipeline = middlewares ? [...middlewares, boundRoute] : [boundRoute];
+			this.router[route.method](route.path, ...pipeline);
 		}
 	}
 }
