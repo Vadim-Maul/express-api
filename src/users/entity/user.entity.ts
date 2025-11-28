@@ -7,8 +7,8 @@ export class User {
 		private readonly _username: string,
 	) {}
 
-	public async setPassword(password: string): Promise<void> {
-		this._password = await hash(password, 10);
+	public async setPassword(password: string, salt: number): Promise<void> {
+		this._password = await hash(password, salt);
 	}
 
 	get email(): string {
