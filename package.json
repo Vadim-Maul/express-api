@@ -3,7 +3,6 @@
 	"version": "1.0.0",
 	"description": "Sandbox project for express api",
 	"main": "index.js",
-	"type": "module",
 	"scripts": {
 		"build": "npx prisma generate && tsc",
 		"start": "npx prisma migrate deploy && node ./dist/main.js",
