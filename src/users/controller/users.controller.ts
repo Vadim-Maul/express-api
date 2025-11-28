@@ -46,6 +46,6 @@ export class UsersController extends BaseController implements IUserController {
 		if (!result) {
 			return next(new HttpError(422, 'Cannot create user or user already exists', 'register'));
 		}
-		this.ok(res, { email: result.email, username: result.username });
+		this.ok(res, { email: result.email, username: result.username, id: result.id });
 	}
 }
