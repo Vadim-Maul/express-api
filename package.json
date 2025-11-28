@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "npx prisma generate && tsc",
-		"start": "npx prisma migrate deploy && node ./dist/main.js",
+		"start": "npx prisma migrate deploy && node ./dist/src/main.js",
 		"dev": "tsx watch --include ./src --exclude ./src/**/*.spec.ts --clear-screen=false ./src/main.ts",
 		"dev:inspect": "tsx --inspect-brk ./src/main.ts",
 		"db:up": "docker compose up -d",
