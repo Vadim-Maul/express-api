@@ -18,7 +18,7 @@ export class App {
     @inject(TYPES.ExceptionFilter) private exceptionFilter: IExceptionFilter
   ) {
     this.app = express();
-    this.port = 3000;
+    this.port = process.env.PORT ? Number(process.env.PORT) : 3000;
     this.logger = logger;
     this.userController = userController;
     this.exceptionFilter = exceptionFilter;
