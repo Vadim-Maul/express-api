@@ -6,7 +6,6 @@
 	"type": "module",
 	"scripts": {
 		"build": "npx prisma generate && tsc",
-		"postinstall": "prisma generate",
 		"start": "npx prisma migrate deploy && node ./dist/main.js",
 		"dev": "tsx watch --include ./src --exclude ./src/**/*.spec.ts --clear-screen=false ./src/main.ts",
 		"dev:inspect": "tsx --inspect-brk ./src/main.ts",
