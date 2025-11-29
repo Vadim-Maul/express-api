@@ -82,6 +82,12 @@ export class UserService implements IUserService {
 		return { access, refresh };
 	}
 
+	async getUserInfo(email: string): Promise<UserModel | null> {
+		const user = await this.userRepository.find(email);
+		if (!user) return null;
+		return user;
+	}
+
 	async rotateRefresh(oldRefresh: string): Promise<{ access: string; refresh: string } | null> {
 		const user = await this.userRepository.findByRefreshToken(oldRefresh);
 		if (!user) return null;

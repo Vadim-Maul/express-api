@@ -9,9 +9,9 @@ import { UserLoginDto } from '../dto/user-login.dto';
 import { UserRegisterDto } from '../dto/user-register.dto';
 import { IUserService } from '../service/user.service.interface';
 import { ValidateMiddleware } from '../../common/validate.middleware';
-import { verify } from 'jsonwebtoken';
 import { IConfigService } from '../../config/config.service.interface';
 import { RefreshDto } from '../dto/user-refresh.dto';
+import { AuthGuard } from '../../common/auth.guard';
 
 @injectable()
 export class UsersController extends BaseController implements IUserController {
@@ -45,6 +45,12 @@ export class UsersController extends BaseController implements IUserController {
 				path: '/logout',
 				func: this.logout,
 				middlewares: [new ValidateMiddleware(RefreshDto)],
+			},
+			{
+				method: 'get',
+				path: '/info',
+				func: this.info,
+				middlewares: [new AuthGuard()],
 			},
 		]);
 	}
@@ -95,5 +101,14 @@ export class UsersController extends BaseController implements IUserController {
 			return next(new HttpError(401, 'Invalid refresh token', 'refresh'));
 		}
 		this.ok(res, rotated);
+	}
+	async info(
+		{ user }: Request<object, object, UserLoginDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		const userInfo = await this.userService.getUserInfo(user!.email);
+
+		this.ok(res, { email: userInfo?.email, username: userInfo?.username, id: userInfo?.id });
 	}
 }

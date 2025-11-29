@@ -8,4 +8,5 @@ export interface IUserService {
 	issueTokens: (email: string) => Promise<{ access: string; refresh: string } | null>;
 	rotateRefresh: (oldRefresh: string) => Promise<{ access: string; refresh: string } | null>;
 	logout: (refreshToken: string) => Promise<boolean>;
+	getUserInfo: (email: string) => Promise<UserModel | null>;
 }
