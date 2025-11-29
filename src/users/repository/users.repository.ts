@@ -25,4 +25,23 @@ export class UsersRepository implements IUserRepository {
 			},
 		});
 	}
+
+	async updateRefreshToken(userId: number, refreshToken: string | null): Promise<void> {
+		await this.prismaService.client.userModel.update({
+			where: {
+				id: userId,
+			},
+			data: {
+				refreshToken,
+			},
+		});
+	}
+
+	async findByRefreshToken(refreshToken: string): Promise<UserModel | null> {
+		return this.prismaService.client.userModel.findFirst({
+			where: {
+				refreshToken,
+			},
+		});
+	}
 }

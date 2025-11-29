@@ -9,12 +9,16 @@ import { UserLoginDto } from '../dto/user-login.dto';
 import { UserRegisterDto } from '../dto/user-register.dto';
 import { IUserService } from '../service/user.service.interface';
 import { ValidateMiddleware } from '../../common/validate.middleware';
+import { verify } from 'jsonwebtoken';
+import { IConfigService } from '../../config/config.service.interface';
+import { RefreshDto } from '../dto/user-refresh.dto';
 
 @injectable()
 export class UsersController extends BaseController implements IUserController {
 	constructor(
 		@inject(TYPES.ILogger) private loggerService: ILogger,
 		@inject(TYPES.UserService) private userService: IUserService,
+		@inject(TYPES.ConfigService) private configService: IConfigService,
 	) {
 		super(loggerService);
 		this.bindRoutes([
@@ -22,6 +26,7 @@ export class UsersController extends BaseController implements IUserController {
 				method: 'post',
 				path: '/login',
 				func: this.login,
+				middlewares: [new ValidateMiddleware(UserLoginDto)],
 			},
 			{
 				method: 'post',
@@ -29,13 +34,44 @@ export class UsersController extends BaseController implements IUserController {
 				func: this.register,
 				middlewares: [new ValidateMiddleware(UserRegisterDto)],
 			},
+			{
+				method: 'post',
+				path: '/refresh',
+				func: this.refresh,
+				middlewares: [new ValidateMiddleware(RefreshDto)],
+			},
+			{
+				method: 'post',
+				path: '/logout',
+				func: this.logout,
+				middlewares: [new ValidateMiddleware(RefreshDto)],
+			},
 		]);
 	}
 
-	login(req: Request<object, object, UserLoginDto>, res: Response, next: NextFunction): void {
-		console.log(req.body);
+	async login(
+		{ body }: Request<object, object, UserLoginDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		const result = await this.userService.validateUser(body);
+		if (!result) {
+			return next(new HttpError(401, 'Unauthorized', 'login'));
+		}
+		const tokens = await this.userService.issueTokens(body.email);
+		this.ok(res, tokens as { access: string; refresh: string });
+	}
 
-		next(new HttpError(401, 'Unauthorized', 'login'));
+	async logout(
+		{ body }: Request<object, object, RefreshDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		const ok = await this.userService.logout(body.refreshToken);
+		if (!ok) {
+			return next(new HttpError(400, 'Logout failed', 'logout'));
+		}
+		this.ok(res, { message: 'Logged out successfully' });
 	}
 	async register(
 		{ body }: Request<object, object, UserRegisterDto>,
@@ -47,5 +83,17 @@ export class UsersController extends BaseController implements IUserController {
 			return next(new HttpError(422, 'Cannot create user or user already exists', 'register'));
 		}
 		this.ok(res, { email: result.email, username: result.username, id: result.id });
+	}
+
+	async refresh(
+		{ body }: Request<object, object, RefreshDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		const rotated = await this.userService.rotateRefresh(body.refreshToken);
+		if (!rotated) {
+			return next(new HttpError(401, 'Invalid refresh token', 'refresh'));
+		}
+		this.ok(res, rotated);
 	}
 }
