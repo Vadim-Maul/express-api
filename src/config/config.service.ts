@@ -6,7 +6,7 @@ import { config, DotenvConfigOutput, DotenvParseOutput } from 'dotenv';
 
 @injectable()
 export class ConfigService implements IConfigService {
-	private config!: DotenvParseOutput;
+	private config: DotenvParseOutput = {};
 	constructor(@inject(TYPES.ILogger) private logger: ILogger) {
 		const result: DotenvConfigOutput = config();
 		if (result.error) {
@@ -18,6 +18,6 @@ export class ConfigService implements IConfigService {
 	}
 
 	get(key: string): string {
-		return this.config[key];
+		return process.env[key] ?? this.config[key];
 	}
 }
