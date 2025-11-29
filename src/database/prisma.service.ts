@@ -14,7 +14,7 @@ export class PrismaService {
 		@inject(TYPES.ILogger) private logger: ILogger,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 	) {
-		const pool = new Pool({ connectionString: this.configService.getOrThrow('DATABASE_URL') });
+		const pool = new Pool({ connectionString: this.configService.get('DATABASE_URL') });
 		this.adapter = new PrismaPg(pool);
 		this.client = new PrismaClient({ adapter: this.adapter });
 	}
