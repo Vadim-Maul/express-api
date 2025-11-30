@@ -31,8 +31,8 @@ jobs:
         env:
           DATABASE_URL: 'postgresql://dummy:dummy@localhost:5432/dummy'
 
-      # - name: Run Tests
-      #   run: npm test
+      - name: Run Tests
+        run: npm test
 
   deploy:
     name: Deploy to Railway
