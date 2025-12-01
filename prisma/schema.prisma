@@ -8,6 +8,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 
 model UserModel {
   id        Int      @id @default(autoincrement())
@@ -15,6 +20,16 @@ model UserModel {
   username  String
   password  String
   refreshToken String?
+  role      Role     @default(USER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ProductModel {
+  id          Int      @id @default(autoincrement())
+  name        String
+  price       Decimal
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

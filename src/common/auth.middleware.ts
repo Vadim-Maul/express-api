@@ -21,7 +21,11 @@ export class AuthMiddleware implements IMiddleware {
 				if (err) {
 					next();
 				} else if (payload && typeof payload === 'object' && 'email' in payload) {
-					req.user = { email: payload.email as string };
+					req.user = {
+						email: payload.email as string,
+						id: Number(payload.sub),
+						role: payload.role,
+					};
 					next();
 				}
 			});

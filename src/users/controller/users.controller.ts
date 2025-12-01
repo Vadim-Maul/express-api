@@ -12,6 +12,8 @@ import { ValidateMiddleware } from '../../common/validate.middleware';
 import { IConfigService } from '../../config/config.service.interface';
 import { RefreshDto } from '../dto/user-refresh.dto';
 import { AuthGuard } from '../../common/auth.guard';
+import { Role } from '../../generated/prisma/enums';
+import { RolesGuard } from '../../common/roles.guard';
 
 @injectable()
 export class UsersController extends BaseController implements IUserController {
@@ -50,7 +52,7 @@ export class UsersController extends BaseController implements IUserController {
 				method: 'get',
 				path: '/info',
 				func: this.info,
-				middlewares: [new AuthGuard()],
+				middlewares: [new AuthGuard(), new RolesGuard([Role.ADMIN])],
 			},
 		]);
 	}

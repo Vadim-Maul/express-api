@@ -45,6 +45,7 @@ describe('UserService', () => {
 				username: user.username,
 				password: user.password,
 				refreshToken: null,
+				role: 'USER',
 				createdAt: new Date(),
 				updatedAt: new Date(),
 			});

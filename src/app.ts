@@ -1,6 +1,7 @@
 import express, { Express } from 'express';
 import { Server } from 'http';
 import { UsersController } from './users/controller/users.controller';
+import { ProductsController } from './products/controller/products.controller';
 import { injectable, inject } from 'inversify';
 import { TYPES } from './types';
 import { ILogger } from './logger/logger.interface';
@@ -18,6 +19,7 @@ export class App {
 	constructor(
 		@inject(TYPES.ILogger) private logger: ILogger,
 		@inject(TYPES.UserController) private userController: UsersController,
+		@inject(TYPES.ProductsController) private productsController: ProductsController,
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: IExceptionFilter,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.PrismaService) private prismaService: PrismaService,
@@ -26,6 +28,7 @@ export class App {
 		this.port = Number(this.configService.get('PORT')) || 3000;
 		this.logger = logger;
 		this.userController = userController;
+		this.productsController = productsController;
 		this.exceptionFilter = exceptionFilter;
 	}
 
@@ -37,6 +40,7 @@ export class App {
 
 	useRoutes(): void {
 		this.app.use('/users', this.userController.router);
+		this.app.use('/api', this.productsController.router);
 	}
 
 	useExceptionFilters(): void {

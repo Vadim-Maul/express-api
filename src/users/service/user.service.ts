@@ -35,10 +35,17 @@ export class UserService implements IUserService {
 		return newUser.comparePassword(password);
 	}
 
-	private signAccess(email: string): Promise<string> {
+	private signAccess(email: string, userId: number, role: string): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			sign(
-				{ email, iat: Number(this.configService.get('ACCESS_TOKEN_EXPIRES_IN')) },
+				{
+					email,
+					sub: userId,
+					role,
+					iat:
+						Number(this.configService.get('ACCESS_TOKEN_EXPIRES_IN')) ||
+						Math.floor(Date.now() / 1000),
+				},
 				this.configService.get('JWT_SECRET'),
 				{
 					algorithm: 'HS256',
@@ -57,7 +64,7 @@ export class UserService implements IUserService {
 	private signRefresh(userId: number): Promise<string> {
 		return new Promise<string>((resolve, reject) => {
 			sign(
-				{ userId, iat: Number(this.configService.get('REFRESH_TOKEN_EXPIRES_IN')) },
+				{ sub: userId, iat: Number(this.configService.get('REFRESH_TOKEN_EXPIRES_IN')) },
 				this.configService.get('REFRESH_SECRET'),
 				{
 					algorithm: 'HS256',
@@ -76,7 +83,8 @@ export class UserService implements IUserService {
 	async issueTokens(email: string): Promise<{ access: string; refresh: string } | null> {
 		const user = await this.userRepository.find(email);
 		if (!user) return null;
-		const access = await this.signAccess(user.email);
+		const userRole = (user as any).role ?? 'USER';
+		const access = await this.signAccess(user.email, user.id, userRole);
 		const refresh = await this.signRefresh(user.id);
 		await this.userRepository.updateRefreshToken(user.id, refresh);
 		return { access, refresh };
@@ -96,7 +104,8 @@ export class UserService implements IUserService {
 		} catch {
 			return null;
 		}
-		const access = await this.signAccess(user.email);
+		const userRole = (user as any).role ?? 'USER';
+		const access = await this.signAccess(user.email, user.id, userRole);
 		const refresh = await this.signRefresh(user.id);
 		await this.userRepository.updateRefreshToken(user.id, refresh);
 		return { access, refresh };

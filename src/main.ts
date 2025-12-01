@@ -15,6 +15,11 @@ import { IConfigService } from './config/config.service.interface';
 import { PrismaService } from './database/prisma.service';
 import { UsersRepository } from './users/repository/users.repository';
 import { IUserRepository } from './users/repository/users.repository.interface';
+import { ProductsRepository } from './products/repository/products.repository';
+import { IProductsRepository } from './products/repository/products.repository.interface';
+import { ProductService } from './products/service/product.service';
+import { IProductService } from './products/service/product.service.interface';
+import { ProductsController } from './products/controller/products.controller';
 
 export interface IBootstrapReturn {
 	appContainer: Container;
@@ -29,6 +34,12 @@ export const appBindings = new ContainerModule((bind) => {
 	bind.bind<IUserController>(TYPES.UserController).to(UsersController).inSingletonScope();
 	bind.bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
 	bind.bind<IUserRepository>(TYPES.UserRepository).to(UsersRepository).inSingletonScope();
+	bind
+		.bind<IProductsRepository>(TYPES.ProductsRepository)
+		.to(ProductsRepository)
+		.inSingletonScope();
+	bind.bind<IProductService>(TYPES.ProductService).to(ProductService).inSingletonScope();
+	bind.bind<ProductsController>(TYPES.ProductsController).to(ProductsController).inSingletonScope();
 	bind.bind<App>(TYPES.Application).to(App);
 });
 
