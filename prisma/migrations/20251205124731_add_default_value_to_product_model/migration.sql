@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "ProductModel" ALTER COLUMN "heatLevel" SET DEFAULT 1,
+ALTER COLUMN "rating" SET DEFAULT 1,
+ALTER COLUMN "type" SET DEFAULT 1;
