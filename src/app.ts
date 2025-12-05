@@ -1,4 +1,5 @@
 import express, { Express } from 'express';
+import cors from 'cors';
 import { Server } from 'http';
 import { UsersController } from './users/controller/users.controller';
 import { ProductsController } from './products/controller/products.controller';
@@ -33,6 +34,7 @@ export class App {
 	}
 
 	useMiddleware(): void {
+		this.app.use(cors({ origin: '*' }));
 		this.app.use(express.json());
 		const authMiddleware = new AuthMiddleware(this.configService);
 		this.app.use(authMiddleware.execute.bind(authMiddleware));

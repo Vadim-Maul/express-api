@@ -30,6 +30,10 @@ model ProductModel {
   name        String
   price       Decimal
   description String?
+  image       String
+  rating      Int      
+  heatLevel   Int      
+  type        Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
