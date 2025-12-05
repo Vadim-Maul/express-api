@@ -30,7 +30,7 @@ model ProductModel {
   name        String
   price       Decimal
   description String?
-  image       String
+  image       String 
   rating      Int @default(1)
   heatLevel   Int @default(1)
   type        Int @default(1)

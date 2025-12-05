@@ -9,9 +9,17 @@ import { Product } from '../entity/product.entity';
 export class ProductsRepository implements IProductsRepository {
 	constructor(@inject(TYPES.PrismaService) private prismaService: PrismaService) {}
 
-	async create({ name, price, description }: Product): Promise<ProductModel> {
+	async create({
+		name,
+		price,
+		description,
+		image,
+		rating,
+		heatLevel,
+		type,
+	}: Product): Promise<ProductModel> {
 		return this.prismaService.client.productModel.create({
-			data: { name, price, description },
+			data: { name, price, description, image, rating, heatLevel, type },
 		});
 	}
 

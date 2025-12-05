@@ -12,7 +12,15 @@ export class ProductService implements IProductService {
 	constructor(@inject(TYPES.ProductsRepository) private repo: IProductsRepository) {}
 
 	async create(dto: CreateProductDto): Promise<ProductModel> {
-		const entity = new Product(dto.name, Number(dto.price), dto.description);
+		const entity = new Product(
+			dto.name,
+			Number(dto.price),
+			dto.image,
+			dto.rating ?? 1,
+			dto.heatLevel ?? 1,
+			dto.type ?? 1,
+			dto.description,
+		);
 		return this.repo.create(entity);
 	}
 

@@ -9,4 +9,18 @@ export class CreateProductDto {
 	@IsString()
 	@IsOptional()
 	description?: string;
+	@IsString()
+	image!: string;
+	@IsNumber()
+	@Min(1)
+	@IsOptional()
+	rating?: number;
+	@IsNumber()
+	@Min(1)
+	@IsOptional()
+	heatLevel?: number;
+	@IsNumber()
+	@Min(1)
+	@IsOptional()
+	type?: number;
 }
